@@ -1,0 +1,56 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="#CBE8EA"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_menu_coctel"
+        android:layout_weight="50"
+        />
+
+
+    <EditText
+        android:layout_margin="10dp"
+        android:id="@+id/edtUser"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:hint="Usuario"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        />
+
+    <EditText
+        android:layout_margin="10dp"
+        android:id="@+id/edtPassword"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:hint="ContraseÃ±a"/>
+    <Button
+        android:onClick="Login"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="25"
+        />
+
+</LinearLayout>

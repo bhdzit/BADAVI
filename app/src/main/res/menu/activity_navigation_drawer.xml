@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_ventas"
+            android:icon="@drawable/ic_menu_ventas"
+            android:title="@string/Ventas" />
+        <item
+            android:id="@+id/nav_botellas"
+            android:icon="@drawable/ic_menu_botella"
+            android:title="@string/Botellas" />
+        <item
+            android:id="@+id/nav_cocteles"
+            android:icon="@drawable/ic_menu_coctel"
+            android:title="@string/Cocteles" />
+        <item
+            android:id="@+id/nav_almacen"
+            android:icon="@drawable/ic_menu_almacen"
+            android:title="@string/Almacen" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="menu_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="menu_send" />
+        </menu>
+    </item>
+
+</menu>
