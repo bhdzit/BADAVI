@@ -1,9 +1,11 @@
 package com.bhdz.badavi;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,6 +54,10 @@ public class BotellasFragment extends Fragment {
 
     public static ViewGroup viewGroup;
 
+
+
+
+
     public BotellasFragment() {
         // Required empty public constructor
     }
@@ -92,28 +98,7 @@ public class BotellasFragment extends Fragment {
             layoutInflater=inflater;
             viewGroup=container;
             new ConsultaBotellas().execute("http://192.168.201.57/bebidas_maquina.php").get();
-/*
-            //Se
-            scroll = (ViewGroup) view.findViewById(R.id.content_botellas);
-            //Layout horisontal
-            LinearLayout contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
-            //
-            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.vertical_layout, container, false);
-            for (int i = 1; i <= 10; i++) {
 
-                View botella = inflater.inflate(R.layout.botella_view, container, false);
-                TextView textView = (TextView) botella.findViewById(R.id.txtvbotella);
-               // textView.setText(botellas.get(2).toString());
-
-
-                contenedorBotellas.addView(botella);
-                if (i % 2 == 0) {
-                    linearLayout.addView(contenedorBotellas);
-                    contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
-                }
-
-            }
-            scroll.addView(linearLayout);*/
         }
         catch (Exception e){
             Log.e(TAG,e.getMessage());
@@ -212,11 +197,21 @@ class ConsultaBotellas extends AsyncTask<String, Void, String> {
                 View botella = inflater.inflate(R.layout.botella_view, container, false);
                 TextView textView = (TextView) botella.findViewById(R.id.txtvbotella);
 
+
                 if(botellaja!=null&&id==i) {
                     textView.setText(botellaja.get(3).toString());
                 }else{
                     textView.append(" "+i);
                 }
+
+                final String botellastr=textView.getText().toString();
+                botella.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new ModificarBotella().show(NavigationActivity.fragmentManager, "SimpleDialog");
+                        Log.e(TAG,botellastr);
+                    }
+                });
                 contenedorBotellas.addView(botella);
                 if (i % 2 == 0) {
                     linearLayout.addView(contenedorBotellas);
