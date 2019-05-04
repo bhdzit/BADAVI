@@ -1,5 +1,6 @@
 package com.bhdz.badavi;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, VentasFragment.OnFragmentInteractionListener,BotellasFragment.OnFragmentInteractionListener {
@@ -110,6 +112,14 @@ public class NavigationActivity extends AppCompatActivity
         return true;
     }
 
+    public  void mostrarMsj() {
+        Context context = getBaseContext();
+        CharSequence text = "Hello toast!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
     @Override
     public void onFragmentInteraction(Uri uri) {
 

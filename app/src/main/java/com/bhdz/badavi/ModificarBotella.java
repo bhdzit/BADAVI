@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,9 @@ import java.util.List;
 public class ModificarBotella extends DialogFragment {
     public static Spinner spBotellas,spMarcas;
     public static Context context;
+    public final String TAG="ModificarBotella";
+    public static List<String>listaidBotellas= new ArrayList<>();
+    public static List<String>listaidMarcas=new ArrayList<>();
 
     public ModificarBotella(){
 
@@ -54,6 +58,10 @@ public class ModificarBotella extends DialogFragment {
             @Override
             public void onClick(View v) {
 
+               //CharSequence text = "->"+
+                String botella=listaidBotellas.get((int)spBotellas.getSelectedItemId());
+                String marca=listaidMarcas.get((int)spMarcas.getSelectedItemId());
+              //  new  setBotellas().execute("192.168.201.57/updateEspacio_maquina.php?id="+spBotellas+"&mercancia=4004");
             }
         });
 
@@ -94,6 +102,8 @@ class ConsultaMercancia extends AsyncTask<String, Void, String> {
             for (int i =0;i<ja.length()-1;i++) {
                 JSONArray mercancia=ja.getJSONArray(i);
                 Log.e(TAG,mercancia.get(1).toString());
+                ModificarBotella.listaidBotellas.add(mercancia.get(0).toString());
+                ModificarBotella.listaidMarcas.add(mercancia.get(3).toString());
                 lsitMercacnia.add(mercancia.get(1).toString());
                 listMarcas.add(mercancia.get(2).toString());
             }

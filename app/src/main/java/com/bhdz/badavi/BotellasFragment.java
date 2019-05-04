@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import org.json.JSONArray;
@@ -51,6 +52,7 @@ public class BotellasFragment extends Fragment {
     public static LayoutInflater layoutInflater;
 
     private ViewGroup scroll;
+    public static Context context;
 
     public static ViewGroup viewGroup;
 
@@ -92,7 +94,7 @@ public class BotellasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){   // Inflate the scroll for this fragment
-
+    context=getContext();
     view=inflater.inflate(R.layout.fragment_botellas,container,false);
         try {
             layoutInflater=inflater;
@@ -113,6 +115,10 @@ public class BotellasFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    public  void mostrarMsj() {
+
     }
 
     @Override
@@ -175,7 +181,7 @@ class ConsultaBotellas extends AsyncTask<String, Void, String> {
         try {
             ja = new JSONArray(result);
             //Resultado=ja;
-            Log.e(TAG,"adasdad"+ja.get(1));
+
 
 
             //Se
