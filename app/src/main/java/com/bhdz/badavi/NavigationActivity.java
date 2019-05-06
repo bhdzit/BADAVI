@@ -1,5 +1,6 @@
 package com.bhdz.badavi;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,11 +18,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class NavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, VentasFragment.OnFragmentInteractionListener,BotellasFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        VentasFragment.OnFragmentInteractionListener,
+        BotellasFragment.OnFragmentInteractionListener,
+        CoctelesFragment.OnFragmentInteractionListener,
+        AlmacenFragment.OnFragmentInteractionListener{
+    private static ProgressDialog mProgressDialog;
     public static FragmentManager fragmentManager;
+    public static Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,21 +37,18 @@ public class NavigationActivity extends AppCompatActivity
         fragmentManager=getSupportFragmentManager();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        context=this;
+
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+       NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_main,new VentasFragment()).commit();
     }
 
     @Override
@@ -85,7 +90,7 @@ public class NavigationActivity extends AppCompatActivity
         int id = item.getItemId();
         Fragment miFragment=null;
         boolean fragmentSeleccionado=false;
-
+      //  showProgressDialog("Obteniedno Datos");
         if (id == R.id.nav_ventas) {
             // Handle the camera action
             miFragment= new VentasFragment();
@@ -96,16 +101,21 @@ public class NavigationActivity extends AppCompatActivity
             fragmentSeleccionado=true;
 
         } else if (id == R.id.nav_cocteles) {
+            miFragment=new CoctelesFragment();
+            fragmentSeleccionado=true;
 
         } else if (id == R.id.nav_almacen) {
-
+            miFragment=new AlmacenFragment();
+            fragmentSeleccionado=true;
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
         }
         if (fragmentSeleccionado==true){
+
             getSupportFragmentManager().beginTransaction().replace(R.id.content_main,miFragment).commit();
+
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -119,6 +129,15 @@ public class NavigationActivity extends AppCompatActivity
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+    private  void showProgressDialog(String caption) {
+     //   if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setIndeterminate(true);
+     //   }
+
+        mProgressDialog.setMessage(caption);
+        mProgressDialog.show();
     }
     @Override
     public void onFragmentInteraction(Uri uri) {

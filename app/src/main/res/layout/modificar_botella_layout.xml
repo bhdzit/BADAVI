@@ -3,25 +3,28 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <TextView
+    <android.support.v7.widget.SearchView
+        android:id="@+id/searvbotella"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Botella"/>
-    <Spinner
-        android:id="@+id/spbotellas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </Spinner>
-    <TextView
+        android:text="Botella"
+        android:iconifiedByDefault="false"/>
+   <android.support.v7.widget.RecyclerView
+       android:layout_width="match_parent"
+       android:layout_height="fill_parent"
+       android:id="@+id/rvBotellas">
+
+   </android.support.v7.widget.RecyclerView>
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Marca"/>
-    <Spinner
-        android:id="@+id/spMarca"
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/lvMarcas">
 
-    </Spinner>
+    </ListView>
 <Button
     android:id="@+id/btnOk"
     android:layout_gravity="center"

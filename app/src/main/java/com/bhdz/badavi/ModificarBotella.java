@@ -6,12 +6,17 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,14 +34,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.SearchView;
 
-public class ModificarBotella extends DialogFragment {
-    public static Spinner spBotellas,spMarcas;
+public class ModificarBotella extends DialogFragment implements SearchView.OnQueryTextListener{
+
     public static Context context;
     public final String TAG="ModificarBotella";
     public static List<String>listaidBotellas= new ArrayList<>();
     public static List<String>listaidMarcas=new ArrayList<>();
+    public RecyclerView rv;
+    public List<String> botellasList;
+    Adapter rvadapter;
+    public SearchView searchView;
 
+    ListView lvBotellas;
     public ModificarBotella(){
 
     }
@@ -45,28 +56,53 @@ public class ModificarBotella extends DialogFragment {
     }
     public AlertDialog createDialogo() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
+        context=this.getContext();
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View v = inflater.inflate(R.layout.modificar_botella_layout, null);
-       spBotellas=(Spinner)v.findViewById(R.id.spbotellas);
-       spMarcas=(Spinner)v.findViewById(R.id.spMarca);
-        new ConsultaMercancia().execute("http://192.168.201.57/getMercancia.php");
-        context=this.getContext();
+
+    searchView=v.findViewById(R.id.searvbotella);
+    searchView.setOnQueryTextListener(this);
+        new ConsultaMercancia().execute("http://192.168.201.52/getMercancia.php");
+
         builder.setView(v);
         v.findViewById(R.id.btnOk).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listaidBotellas.add("dadad");
 
-               //CharSequence text = "->"+
-                String botella=listaidBotellas.get((int)spBotellas.getSelectedItemId());
-                String marca=listaidMarcas.get((int)spMarcas.getSelectedItemId());
-              //  new  setBotellas().execute("192.168.201.57/updateEspacio_maquina.php?id="+spBotellas+"&mercancia=4004");
-            }
+                listaidBotellas.add("dadad");
+
+                listaidBotellas.add("dadad");
+
+                listaidBotellas.add("dadad");
+
+                listaidBotellas.add("dadad");
+                rvadapter.notifyDataSetChanged();
+           }
         });
+        botellasList= new ArrayList<>();
+        rvadapter = new Adapter(listaidBotellas);
 
+
+        rv=v.findViewById(R.id.rvBotellas);
+        rv.setLayoutManager(new LinearLayoutManager(v.getContext()));
+
+        Log.e(TAG,"->"+listaidBotellas.size());
+        rv.setAdapter(rvadapter);
 
         return builder.create();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.e(TAG,newText);
+        return false;
     }
 }
 
@@ -115,8 +151,8 @@ class ConsultaMercancia extends AsyncTask<String, Void, String> {
                 android.R.layout.simple_spinner_dropdown_item, lsitMercacnia);
         ArrayAdapter adapter1 = new ArrayAdapter<String>(ModificarBotella.context,
                 android.R.layout.simple_spinner_dropdown_item, listMarcas);
-        ModificarBotella.spMarcas.setAdapter(adapter1);
-        ModificarBotella.spBotellas.setAdapter(adapter);
+    //    ModificarBotella.spMarcas.setAdapter(adapter1);
+    //    ModificarBotella.spBotellas.setAdapter(adapter);
     }
 
 

@@ -46,7 +46,7 @@ public class BotellasFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     public static View view;
-    public final String TAG="VentasFragment";
+    public final String TAG="BotellasFragment";
 
     private OnFragmentInteractionListener mListener;
     public static LayoutInflater layoutInflater;
@@ -97,15 +97,67 @@ public class BotellasFragment extends Fragment {
     context=getContext();
     view=inflater.inflate(R.layout.fragment_botellas,container,false);
         try {
-            layoutInflater=inflater;
-            viewGroup=container;
-            new ConsultaBotellas().execute("http://192.168.201.57/bebidas_maquina.php").get();
+            layoutInflater = inflater;
+            viewGroup = container;
+            String result = new ConsultaBotellas().execute("http://192.168.201.57/bebidas_maquina.php").get();
+            if (result != null) {
+                JSONArray ja = null;
 
-        }
-        catch (Exception e){
-            Log.e(TAG,e.getMessage());
+                ja = new JSONArray(result);
+                //Se
+                scroll = (ViewGroup) BotellasFragment.view.findViewById(R.id.content_botellas);
+                //Layout horisontal
+                LinearLayout contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
+                //
+                LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.vertical_layout, container, false);
 
-        }
+                for (int i = 1; i <= 10; i++) {
+                    JSONArray botellaja = null;
+                    int id = 0;
+                    try {
+                        botellaja = ja.getJSONArray(i - 1);
+                        id = botellaja.getInt(0);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+                    final View botella = inflater.inflate(R.layout.botella_view, container, false);
+                    botella.setId(i);
+                    TextView textView = (TextView) botella.findViewById(R.id.txtvbotella);
+
+
+                    if (botellaja != null && id == i) {
+                        textView.setText(botellaja.get(3).toString());
+                    } else {
+                        textView.append(" " + i);
+                    }
+
+                    final String botellastr = textView.getText().toString();
+                    botella.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new ModificarBotella().show(NavigationActivity.fragmentManager, "SimpleDialog");
+                            Log.e(TAG, "->"+botella.getId());
+                        }
+                    });
+                    contenedorBotellas.addView(botella);
+                    if (i % 2 == 0) {
+                        linearLayout.addView(contenedorBotellas);
+                        contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
+                    }
+
+                }
+                scroll.addView(linearLayout);
+
+             }
+            }
+        catch(Exception e){
+                Log.e(TAG, "->" + e.getMessage());
+                mostrarMsj("Error de la base de datos");
+                view = inflater.inflate(R.layout.error_layout, container, false);
+            }finally{
+
+            }
+
     //  scroll.addView(contenedorBotellas);
         return view;//inflater.inflate(R.scroll.fragment_ventas, container, false);
     }
@@ -117,8 +169,13 @@ public class BotellasFragment extends Fragment {
         }
     }
 
-    public  void mostrarMsj() {
+    public  void mostrarMsj(String a) {
+        Context context = getContext();
+        CharSequence text = a;
+        int duration = Toast.LENGTH_SHORT;
 
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     @Override
@@ -169,14 +226,14 @@ class ConsultaBotellas extends AsyncTask<String, Void, String> {
         try {
             return downloadUrl(urls[0]);
         } catch (IOException e) {
-            return "Unable to retrieve web page. URL may be invalid.";
+            return null;
         }
     }
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(String result) {
 
-        JSONArray ja = null;
+      /*  JSONArray ja = null;
 
         try {
             ja = new JSONArray(result);
@@ -198,7 +255,7 @@ class ConsultaBotellas extends AsyncTask<String, Void, String> {
                     botellaja=ja.getJSONArray(i-1);
                     id=botellaja.getInt(0);
                 }catch (Exception e){
-
+                    Log.e(TAG,e.getMessage());
                 }
                 View botella = inflater.inflate(R.layout.botella_view, container, false);
                 TextView textView = (TextView) botella.findViewById(R.id.txtvbotella);
@@ -233,7 +290,7 @@ class ConsultaBotellas extends AsyncTask<String, Void, String> {
         } catch (JSONException e) {
             Log.e(TAG,"eroro->"+e.getMessage());
         }
-
+*/
     }
 
 
@@ -255,7 +312,7 @@ class ConsultaBotellas extends AsyncTask<String, Void, String> {
             // Starts the query
             conn.connect();
             int response = conn.getResponseCode();
-            Log.d("respuesta", "The response is: " + response);
+            Log.e("respuesta", "The response is: " + response);
             is = conn.getInputStream();
 
             // Convert the InputStream into a string
