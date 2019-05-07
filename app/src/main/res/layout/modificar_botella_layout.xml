@@ -12,19 +12,19 @@
    <android.support.v7.widget.RecyclerView
        android:layout_width="match_parent"
        android:layout_height="fill_parent"
-       android:id="@+id/rvBotellas">
-
-   </android.support.v7.widget.RecyclerView>
-    <EditText
+       android:id="@+id/rvBotellas"/>
+       <android.support.v7.widget.SearchView
+           android:id="@+id/searvMarca"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Botella"
+           android:iconifiedByDefault="false"/>
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Marca"/>
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/lvMarcas">
+        android:layout_height="fill_parent"
+        android:id="@+id/rvMarcas"
+    />
 
-    </ListView>
 <Button
     android:id="@+id/btnOk"
     android:layout_gravity="center"

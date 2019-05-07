@@ -8,16 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ClienteViewHolder> {
-    List<String> botellas;
+    List<Mercancia> botellas;
+    List<Mercancia> listaBotellas;
 
-    public Adapter(List <String>botellas){
+    public Adapter(List <Mercancia>botellas){
+        listaBotellas=new ArrayList<Mercancia>();
+        listaBotellas.addAll(botellas);
         this.botellas =botellas;
-
+        this.botellas.clear();
     }
     @NonNull
     @Override
@@ -29,9 +33,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ClienteViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ClienteViewHolder clienteViewHolder, int i) {
-    String botella= botellas.get(i);
-    clienteViewHolder.botella.setText("hola");
 
+    Mercancia mercancia= botellas.get(i);
+    clienteViewHolder.botella.setText(mercancia.getNombreMercancia());
     }
 
     @Override
@@ -45,5 +49,20 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ClienteViewHolder> {
             super(itemView);
             botella= (TextView) itemView.findViewById(R.id.rvbotella);
         }
+    }
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        botellas.clear();
+        if (charText.length() == 0) {
+            botellas.addAll(listaBotellas);
+        } else {
+            for (Mercancia wp : listaBotellas) {
+                if (wp.NombreMercancia.toLowerCase(Locale.getDefault()).contains(charText)) {
+                    botellas.add(wp);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

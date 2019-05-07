@@ -99,7 +99,7 @@ public class BotellasFragment extends Fragment {
         try {
             layoutInflater = inflater;
             viewGroup = container;
-            String result = new ConsultaBotellas().execute("http://192.168.201.57/bebidas_maquina.php").get();
+            String result = new ConsultaBotellas().execute("http://192.168.8.7/bebidas_maquina.php").get();
             if (result != null) {
                 JSONArray ja = null;
 
