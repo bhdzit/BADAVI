@@ -13,15 +13,16 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ClienteViewHolder> {
-    List<Mercancia> botellas;
-    List<Mercancia> listaBotellas;
+public class AdapterMercancia extends RecyclerView.Adapter<AdapterMercancia.ClienteViewHolder> {
+    List<Mercancia> Mercancia;
+    List<Mercancia> listaMercancia;
 
-    public Adapter(List <Mercancia>botellas){
-        listaBotellas=new ArrayList<Mercancia>();
-        listaBotellas.addAll(botellas);
-        this.botellas =botellas;
-        this.botellas.clear();
+    public AdapterMercancia(List <Mercancia> Mercancia){
+        listaMercancia =new ArrayList<Mercancia>();
+        listaMercancia.addAll(Mercancia);
+        this.Mercancia = Mercancia;
+        this.Mercancia.clear();
+
     }
     @NonNull
     @Override
@@ -34,13 +35,24 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ClienteViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ClienteViewHolder clienteViewHolder, int i) {
 
-    Mercancia mercancia= botellas.get(i);
+    final Mercancia mercancia= Mercancia.get(i);
     clienteViewHolder.botella.setText(mercancia.getNombreMercancia());
+
+        clienteViewHolder.botella.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ModificarBotella.searchViewMercancia.setQuery(mercancia.getNombreMercancia(),false);
+                ModificarBotella.searchViewMarca.setQuery(mercancia.getMarcaMercancia(),false);
+                ModificarBotella.idMercancia=mercancia.getIdMercancia();
+              //  ModificarBotella.searchViewMarca.setQuery(mercancia.getMarcaMercancia(),false);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return botellas.size();
+        return Mercancia.size();
     }
 
     public static class ClienteViewHolder extends RecyclerView.ViewHolder {
@@ -53,13 +65,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ClienteViewHolder> {
 
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
-        botellas.clear();
+        Mercancia.clear();
         if (charText.length() == 0) {
-            botellas.addAll(listaBotellas);
+            Mercancia.addAll(listaMercancia);
         } else {
-            for (Mercancia wp : listaBotellas) {
+            for (Mercancia wp : listaMercancia) {
                 if (wp.NombreMercancia.toLowerCase(Locale.getDefault()).contains(charText)) {
-                    botellas.add(wp);
+                    Mercancia.add(wp);
                 }
             }
         }
