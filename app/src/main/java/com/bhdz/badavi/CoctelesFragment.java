@@ -4,9 +4,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 
 /**
@@ -22,11 +30,13 @@ public class CoctelesFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public final String TAG="CoctelesFragment";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    public View view;
+    private ViewGroup scroll;
+    public static int BotellaId;
     private OnFragmentInteractionListener mListener;
 
     public CoctelesFragment() {
@@ -63,8 +73,72 @@ public class CoctelesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cocteles, container, false);
+
+
+        view=inflater.inflate(R.layout.fragment_cocteles,container,false);
+
+        try {
+            String result = new Consultas().execute(Consultas.servidor+"getCocteles.php").get();
+            Log.e(TAG,"->"+result);
+            // if (result != null) {
+            JSONArray ja = null;
+
+            ja = new JSONArray(result);
+            //Se
+            scroll = (ViewGroup) view.findViewById(R.id.content_cocteles);
+            //Layout horisontal
+            LinearLayout contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
+            //
+            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.vertical_layout, container, false);
+
+            for (int i = 1; i <= ja.length(); i++) {
+                JSONArray cocteljason = null;
+
+                try {
+                    cocteljason = ja.getJSONArray(i-1);
+
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                final View coctel = inflater.inflate(R.layout.coctel_view, container, false);
+                coctel.setId(i);
+                TextView textView = (TextView) coctel.findViewById(R.id.txtvbotella);
+                if(cocteljason!=null)
+                textView.setText(cocteljason.getString(1));
+
+
+                final String botellastr = textView.getText().toString();
+                coctel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        FragmentManager fragmentManager = NavigationActivity.fragmentManager;
+                       AddCoctel newFragment = new AddCoctel();
+                       newFragment.show(NavigationActivity.fragmentManager,"Cocteles");
+                      //  new ModificarBotella().show(NavigationActivity.fragmentManager, "SimpleDialog");
+                      //  BotellaId=botella.getId();
+
+                    }
+                });
+                contenedorBotellas.addView(coctel);
+                if (i % 2 == 0) {
+                    linearLayout.addView(contenedorBotellas);
+                    contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
+                }
+
+            }
+            scroll.addView(linearLayout);
+
+            // }
+        }
+        catch(Exception e){
+            Log.e(TAG, "->" + e.getMessage());
+         //   mostrarMsj("Error de la base de datos");
+            view = inflater.inflate(R.layout.error_layout, container, false);
+        }
+
+        //  scroll.addView(contenedorBotellas);
+        return view;//inflater.inflate(R.scroll.fragment_ventas, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

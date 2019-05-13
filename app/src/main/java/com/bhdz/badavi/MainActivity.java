@@ -17,5 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void Login(View view) {
         startActivity(new Intent(this,NavigationActivity.class));
+        finish();
     }
 }

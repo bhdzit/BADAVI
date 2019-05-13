@@ -46,8 +46,8 @@ public class BotellasFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     public static View view;
-    public final String TAG="BotellasFragment";
-
+    public static final String TAG="BotellasFragment";
+    public static int BotellaId;
     private OnFragmentInteractionListener mListener;
     public static LayoutInflater layoutInflater;
 
@@ -94,13 +94,14 @@ public class BotellasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){   // Inflate the scroll for this fragment
-    context=getContext();
+
+        Log.e(TAG,"BotellasFragment");
     view=inflater.inflate(R.layout.fragment_botellas,container,false);
+        Log.e(TAG,"BotellasFragment");
         try {
-            layoutInflater = inflater;
-            viewGroup = container;
-            String result = new ConsultaBotellas().execute("http://192.168.8.7/bebidas_maquina.php").get();
-            if (result != null) {
+            String result = new Consultas().execute(Consultas.servidor+"bebidas_maquina.php").get();
+            Log.e(TAG,"->"+result);
+           // if (result != null) {
                 JSONArray ja = null;
 
                 ja = new JSONArray(result);
@@ -110,12 +111,12 @@ public class BotellasFragment extends Fragment {
                 LinearLayout contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
                 //
                 LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.vertical_layout, container, false);
-
+                int numeroBotella=0;
                 for (int i = 1; i <= 10; i++) {
                     JSONArray botellaja = null;
                     int id = 0;
                     try {
-                        botellaja = ja.getJSONArray(i - 1);
+                        botellaja = ja.getJSONArray(numeroBotella);
                         id = botellaja.getInt(0);
                     } catch (Exception e) {
                         Log.e(TAG, e.getMessage());
@@ -124,9 +125,9 @@ public class BotellasFragment extends Fragment {
                     botella.setId(i);
                     TextView textView = (TextView) botella.findViewById(R.id.txtvbotella);
 
-
                     if (botellaja != null && id == i) {
-                        textView.setText(botellaja.get(3).toString());
+                        textView.setText(botellaja.get(3).toString()+"-"+botellaja.getString(4));
+                        numeroBotella++;
                     } else {
                         textView.append(" " + i);
                     }
@@ -136,7 +137,8 @@ public class BotellasFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             new ModificarBotella().show(NavigationActivity.fragmentManager, "SimpleDialog");
-                            Log.e(TAG, "->"+botella.getId());
+                            BotellaId=botella.getId();
+
                         }
                     });
                     contenedorBotellas.addView(botella);
@@ -148,14 +150,12 @@ public class BotellasFragment extends Fragment {
                 }
                 scroll.addView(linearLayout);
 
-             }
+            // }
             }
         catch(Exception e){
                 Log.e(TAG, "->" + e.getMessage());
                 mostrarMsj("Error de la base de datos");
                 view = inflater.inflate(R.layout.error_layout, container, false);
-            }finally{
-
             }
 
     //  scroll.addView(contenedorBotellas);
@@ -211,128 +211,3 @@ public class BotellasFragment extends Fragment {
     }
 }
 
-
-
-class ConsultaBotellas extends AsyncTask<String, Void, String> {
-    public final String TAG="Consulta";
-    public static JSONArray Resultado;
-    private ViewGroup scroll;
-    public LayoutInflater inflater=BotellasFragment.layoutInflater;
-    public ViewGroup container=BotellasFragment.viewGroup;
-    @Override
-    protected String doInBackground(String... urls) {
-
-        // params comes from the execute() call: params[0] is the url.
-        try {
-            return downloadUrl(urls[0]);
-        } catch (IOException e) {
-            return null;
-        }
-    }
-    // onPostExecute displays the results of the AsyncTask.
-    @Override
-    protected void onPostExecute(String result) {
-
-      /*  JSONArray ja = null;
-
-        try {
-            ja = new JSONArray(result);
-            //Resultado=ja;
-
-
-
-            //Se
-            scroll = (ViewGroup) BotellasFragment.view.findViewById(R.id.content_botellas);
-            //Layout horisontal
-            LinearLayout contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
-            //
-            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.vertical_layout, container, false);
-
-            for (int i = 1; i <= 10; i++) {
-                JSONArray botellaja=null;
-                int id=0;
-                try{
-                    botellaja=ja.getJSONArray(i-1);
-                    id=botellaja.getInt(0);
-                }catch (Exception e){
-                    Log.e(TAG,e.getMessage());
-                }
-                View botella = inflater.inflate(R.layout.botella_view, container, false);
-                TextView textView = (TextView) botella.findViewById(R.id.txtvbotella);
-
-
-                if(botellaja!=null&&id==i) {
-                    textView.setText(botellaja.get(3).toString());
-                }else{
-                    textView.append(" "+i);
-                }
-
-                final String botellastr=textView.getText().toString();
-                botella.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new ModificarBotella().show(NavigationActivity.fragmentManager, "SimpleDialog");
-                        Log.e(TAG,botellastr);
-                    }
-                });
-                contenedorBotellas.addView(botella);
-                if (i % 2 == 0) {
-                    linearLayout.addView(contenedorBotellas);
-                    contenedorBotellas = (LinearLayout) inflater.inflate(R.layout.conten_view, container, false);
-                }
-
-            }
-            scroll.addView(linearLayout);
-
-
-
-
-        } catch (JSONException e) {
-            Log.e(TAG,"eroro->"+e.getMessage());
-        }
-*/
-    }
-
-
-    private String downloadUrl(String myurl) throws IOException {
-        Log.i("URL",""+myurl);
-        myurl = myurl.replace(" ","%20");
-        InputStream is = null;
-        // Only display the first 500 characters of the retrieved
-        // web page content.
-        int len = 500;
-
-        try {
-            URL url = new URL(myurl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Starts the query
-            conn.connect();
-            int response = conn.getResponseCode();
-            Log.e("respuesta", "The response is: " + response);
-            is = conn.getInputStream();
-
-            // Convert the InputStream into a string
-            String contentAsString = readIt(is, len);
-            return contentAsString;
-
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
-    }
-
-    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[len];
-        reader.read(buffer);
-        return new String(buffer);
-    }
-}

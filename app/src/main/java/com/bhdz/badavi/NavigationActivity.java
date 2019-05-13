@@ -38,8 +38,6 @@ public class NavigationActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        context=this;
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
        NavigationView navigationView = findViewById(R.id.nav_view);
@@ -84,6 +82,10 @@ public class NavigationActivity extends AppCompatActivity
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
+    public static void actualizarFragment(Fragment miFragment){
+        fragmentManager.beginTransaction().replace(R.id.content_main,miFragment).commit();
+
+    }
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

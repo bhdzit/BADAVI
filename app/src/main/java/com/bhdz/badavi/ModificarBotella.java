@@ -2,7 +2,9 @@ package com.bhdz.badavi;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -39,7 +41,7 @@ public class ModificarBotella extends DialogFragment implements SearchView.OnQue
     AdapterMercancia adapterMercancia;
     AdapaterMarca adapaterMarca;
     public static SearchView searchViewMercancia,searchViewMarca;
-
+    public static ProgressDialog mProgressDialog;
     ListView lvBotellas;
     public ModificarBotella(){
 
@@ -49,7 +51,8 @@ public class ModificarBotella extends DialogFragment implements SearchView.OnQue
     }
     public AlertDialog createDialogo() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        context=this.getContext();
+
+        mProgressDialog = new ProgressDialog(this.getContext());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View v = inflater.inflate(R.layout.modificar_botella_layout, null);
@@ -73,32 +76,152 @@ public class ModificarBotella extends DialogFragment implements SearchView.OnQue
         MercanciaList= new ArrayList<>();
         prueba= new ArrayList<>();
         try {
-        String result =  new ConsultaMercancia().execute("http://192.168.8.7/getMercancia.php").get();
+        String result =  new Consultas().execute(Consultas.servidor+"getMercancia.php").get();
             JSONArray ja = null;
             ja = new JSONArray(result);
             //Resultado=ja;
-            Log.e(TAG,"adasdad"+ja.get(1));
+
             for (int i =0;i<ja.length()-1;i++) {
                 JSONArray j7=ja.getJSONArray(i);
                 Mercancia mercancia= new Mercancia(j7.getInt(0),j7.getString(1),j7.getString(2),j7.getInt(3));
+
                 MercanciaList.add(mercancia);
-                Log.e(TAG,j7.get(1).toString());
+                Log.e(TAG,mercancia.toString());
             }
 
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG,e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            Log.e(TAG,e.getMessage());
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG,e.getMessage());
+//            e.printStackTrace();
         }
 
         builder.setView(v);
         v.findViewById(R.id.btnOk).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new setBotellas().execute("http://192.168.8.7/updateEspacio_maquina.php?id="+1+"&mercancia="+idMercancia);
-                
+    try {
+        final String queryMercancia=searchViewMercancia.getQuery().toString();
+        final String queryMarca=searchViewMarca.getQuery().toString();
+        if(queryMercancia.isEmpty() ||queryMarca.isEmpty()){
+
+             AlertDialog alertDialog=createSimpleDialog("Error", "Campo Mercancia o Marca vacio", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            alertDialog.show();
+        }
+        else{
+            if(AdapterMercancia.Mercancia.size()==0&&AdapaterMarca.marcas.size()!=0){
+                AlertDialog alertDialog=createSimpleDialog("Aviso", "La Botella "+queryMercancia+" No esta en la base de datos \n ¿Desea Agragrla a la BD?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        try {
+
+                            String a=    new Consultas().execute(Consultas.servidor+"insert_marca_bebida.php?tabla=TIPOS_BEBIDA&value="+queryMercancia.toUpperCase()+"&columna=NOMBRE").get();
+                            String c=    new Consultas().execute(Consultas.servidor+"setMercancia.php?botella="+queryMercancia+"&marca="+queryMarca).get();
+
+                            JSONArray jsonmercancia = null;
+                            jsonmercancia = new JSONArray(c);
+                            Mercancia aux= new Mercancia(jsonmercancia.getInt(0),jsonmercancia.getString(1),jsonmercancia.getString(2),jsonmercancia.getInt(3));
+
+                            AdapterMercancia.Mercancia.add(aux);
+                            adapterMercancia.notifyDataSetChanged();
+                            Log.e(TAG,a);
+                        } catch (Exception e) {
+                            Log.e(TAG,e.getMessage());
+                        }
+                    }
+
+                });
+                alertDialog.show();
+            }
+            if(AdapaterMarca.marcas.size()==0&&AdapterMercancia.Mercancia.size()!=0){
+
+                AlertDialog alertDialog=createSimpleDialog("Aviso", "La Marca "+queryMarca+" No esta en la base de datos \n ¿Desea Agragrla a la BD?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        try {
+
+                            String a=    new Consultas().execute(Consultas.servidor+"insert_marca_bebida.php?tabla=MARCA&value="+queryMarca.toUpperCase()+"&columna=MARCA").get();
+                            String c=    new Consultas().execute(Consultas.servidor+"setMercancia.php?botella="+queryMercancia+"&marca="+queryMarca).get();
+
+                            JSONArray jsonmercancia = null;
+                            jsonmercancia = new JSONArray(c);
+                            Mercancia aux= new Mercancia(jsonmercancia.getInt(0),jsonmercancia.getString(1),jsonmercancia.getString(2),jsonmercancia.getInt(3));
+
+                            AdapaterMarca.marcas.add(aux);
+                            adapaterMarca.notifyDataSetChanged();
+                            Log.e(TAG,a);
+                        } catch (Exception e) {
+                            Log.e(TAG,e.getMessage());
+                        }
+                    }
+
+                });
+
+                alertDialog.show();
+
+            }
+            if(AdapaterMarca.marcas.size()==0&&AdapterMercancia.Mercancia.size()==0){
+
+
+
+
+                AlertDialog alertDialog=createSimpleDialog("Aviso", "La Marca "+queryMarca.toUpperCase()+" y La Botella "+queryMercancia.toUpperCase()+" No esta en la base de datos \n ¿Desea Agragrla a la BD?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        try {
+
+                            String a=    new Consultas().execute(Consultas.servidor+"insert_marca_bebida.php?tabla=MARCA&value="+queryMarca+"&columna=MARCA").get();
+                            String b=    new Consultas().execute(Consultas.servidor+"insert_marca_bebida.php?tabla=TIPOS_BEBIDA&value="+queryMercancia+"&columna=NOMBRE").get();
+                            String c=    new Consultas().execute(Consultas.servidor+"setMercancia.php?botella="+queryMercancia+"&marca="+queryMarca).get();
+
+                            JSONArray jsonmercancia = null;
+                            jsonmercancia = new JSONArray(c);
+                            Mercancia aux= new Mercancia(jsonmercancia.getInt(0),jsonmercancia.getString(1),jsonmercancia.getString(2),jsonmercancia.getInt(3));
+                            AdapaterMarca.marcas.add(aux);
+                            adapaterMarca.notifyDataSetChanged();
+                            AdapterMercancia.Mercancia.add(aux);
+                            adapterMercancia.notifyDataSetChanged();
+
+                            //notifyAll();
+                            Log.e(TAG,""+jsonmercancia.get(1));
+                        } catch (Exception e) {
+                            Log.e(TAG,e.getMessage());
+                        }
+                    }
+
+                });
+
+                alertDialog.show();
+
+            }
+
+
+            if(AdapaterMarca.marcas.size()!=0&&AdapterMercancia.Mercancia.size()!=0) {
+                String a = new Consultas().execute(Consultas.servidor + "updateEspacio_maquina.php?id=" + BotellasFragment.BotellaId + "&botella=" + searchViewMercancia.getQuery().toString() + "&marca=" + searchViewMarca.getQuery().toString()).get();
+                NavigationActivity.actualizarFragment(new BotellasFragment());
+                Log.e(TAG, "->" + a);
+                dismiss();
+            }
+
+        }
+
+       //         //createSimpleDialog();
+        //dismiss();
+    }catch (Exception e){
+        Log.e(TAG, "" + e.getMessage());
+    }
             }
         });
 
@@ -114,11 +237,23 @@ public class ModificarBotella extends DialogFragment implements SearchView.OnQue
         rvMarcas=v.findViewById(R.id.rvMarcas);
         rvMarcas.setLayoutManager(new LinearLayoutManager(v.getContext()));
 
-        Log.e(TAG,"->"+MercanciaList.size());
+
 
         rvMercancia.setAdapter(adapterMercancia);
         rvMarcas.setAdapter(adapaterMarca);
+
         return builder.create();
+    }
+
+
+    public AlertDialog createSimpleDialog(String titulo, String msj, DialogInterface.OnClickListener ok) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle(titulo)
+                .setMessage(msj)
+                .setPositiveButton("OK",ok);
+
+       return   builder.create();
     }
 
     @Override
@@ -128,13 +263,13 @@ public class ModificarBotella extends DialogFragment implements SearchView.OnQue
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
+      //  Log.e(TAG,newText);
         adapterMercancia.filter(newText);
         return false;
     }
 }
-
-class ConsultaMercancia extends AsyncTask<String, Void, String> {
+/*
+class Consulta extends AsyncTask<String, Void, String> {
     public final String TAG="Consulta";
     //public static JSONArray Resultado;
    // private ViewGroup scroll;
@@ -152,6 +287,13 @@ class ConsultaMercancia extends AsyncTask<String, Void, String> {
             return "Unable to retrieve web page. URL may be invalid.";
         }
     }
+
+    @Override
+    protected void onPreExecute() {
+
+    }
+
+
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(String result) {
@@ -177,7 +319,7 @@ class ConsultaMercancia extends AsyncTask<String, Void, String> {
         }
     //    ModificarBotella.spMarcas.setAdapter(adapter1);
     //    ModificarBotella.spBotellas.setAdapter(adapter);
-    */
+
     }
 
 
@@ -192,8 +334,8 @@ class ConsultaMercancia extends AsyncTask<String, Void, String> {
         try {
             URL url = new URL(myurl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setReadTimeout(10000  milliseconds)
+            conn.setConnectTimeout(15000 milliseconds);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
             // Starts the query
@@ -223,72 +365,4 @@ class ConsultaMercancia extends AsyncTask<String, Void, String> {
         return new String(buffer);
     }
 }
-class setBotellas extends  AsyncTask<String, Void, String> {
-    public final String TAG = "Consulta";
-    //public static JSONArray Resultado;
-    // private ViewGroup scroll;
-    public List<String> lsitMercacnia;
-    public List<String> listMarcas;
-    public LayoutInflater inflater = BotellasFragment.layoutInflater;
-
-    @Override
-    protected String doInBackground(String... urls) {
-
-        // params comes from the execute() call: params[0] is the url.
-        try {
-            return downloadUrl(urls[0]);
-        } catch (IOException e) {
-            return "Unable to retrieve web page. URL may be invalid.";
-        }
-    }
-
-    // onPostExecute displays the results of the AsyncTask.
-    @Override
-    protected void onPostExecute(String result) {
-
-
-    }
-
-
-    private String downloadUrl(String myurl) throws IOException {
-        Log.i("URL", "" + myurl);
-        myurl = myurl.replace(" ", "%20");
-        InputStream is = null;
-        // Only display the first 500 characters of the retrieved
-        // web page content.
-        int len = 500;
-
-        try {
-            URL url = new URL(myurl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Starts the query
-            conn.connect();
-            int response = conn.getResponseCode();
-            Log.d("respuesta", "The response is: " + response);
-            is = conn.getInputStream();
-
-            // Convert the InputStream into a string
-            String contentAsString = readIt(is, len);
-            return contentAsString;
-
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
-    }
-
-    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[len];
-        reader.read(buffer);
-        return new String(buffer);
-    }
-}
+*/

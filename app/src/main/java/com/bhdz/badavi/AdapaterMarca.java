@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class AdapaterMarca extends RecyclerView.Adapter<AdapaterMarca.ClienteViewHolder>  {
-    List<Mercancia> marcas;
+    public static  List<Mercancia>  marcas;
     List<Mercancia> ListaMarca;
 
     public AdapaterMarca(List <Mercancia>botellas){

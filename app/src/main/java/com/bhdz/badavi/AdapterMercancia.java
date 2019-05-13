@@ -14,7 +14,7 @@ import java.util.Locale;
 
 
 public class AdapterMercancia extends RecyclerView.Adapter<AdapterMercancia.ClienteViewHolder> {
-    List<Mercancia> Mercancia;
+   public static List<Mercancia> Mercancia;
     List<Mercancia> listaMercancia;
 
     public AdapterMercancia(List <Mercancia> Mercancia){
@@ -71,6 +71,7 @@ public class AdapterMercancia extends RecyclerView.Adapter<AdapterMercancia.Clie
         } else {
             for (Mercancia wp : listaMercancia) {
                 if (wp.NombreMercancia.toLowerCase(Locale.getDefault()).contains(charText)) {
+
                     Mercancia.add(wp);
                 }
             }
