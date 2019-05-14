@@ -3,6 +3,7 @@ package com.bhdz.badavi;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ public class CoctelesFragment extends Fragment {
     private ViewGroup scroll;
     public static int BotellaId;
     private OnFragmentInteractionListener mListener;
+    public FloatingActionButton floatingActionButton;
 
     public CoctelesFragment() {
         // Required empty public constructor
@@ -76,7 +78,15 @@ public class CoctelesFragment extends Fragment {
 
 
         view=inflater.inflate(R.layout.fragment_cocteles,container,false);
-
+        floatingActionButton=view.findViewById(R.id.add_coctel_fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = NavigationActivity.fragmentManager;
+                AddCoctel newFragment = new AddCoctel();
+                newFragment.show(NavigationActivity.fragmentManager,"Cocteles");
+            }
+        });
         try {
             String result = new Consultas().execute(Consultas.servidor+"getCocteles.php").get();
             Log.e(TAG,"->"+result);
@@ -115,6 +125,9 @@ public class CoctelesFragment extends Fragment {
                         FragmentManager fragmentManager = NavigationActivity.fragmentManager;
                        AddCoctel newFragment = new AddCoctel();
                        newFragment.show(NavigationActivity.fragmentManager,"Cocteles");
+                    /*    AddCoctel dialog = new AddCoctel();
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        dialog.show(ft, AddCoctel.TAG);*/
                       //  new ModificarBotella().show(NavigationActivity.fragmentManager, "SimpleDialog");
                       //  BotellaId=botella.getId();
 
