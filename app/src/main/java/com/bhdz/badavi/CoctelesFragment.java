@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class CoctelesFragment extends Fragment {
     public View view;
     private ViewGroup scroll;
     public static int BotellaId;
+    public  static boolean showDialog=false;
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton floatingActionButton;
 
@@ -82,9 +84,7 @@ public class CoctelesFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = NavigationActivity.fragmentManager;
-                AddCoctel newFragment = new AddCoctel();
-                newFragment.show(NavigationActivity.fragmentManager,"Cocteles");
+                if(!showDialog)showFullDialog();
             }
         });
         try {
@@ -118,18 +118,10 @@ public class CoctelesFragment extends Fragment {
 
 
                 final String botellastr = textView.getText().toString();
-                coctel.setOnClickListener(new View.OnClickListener() {
+              coctel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        FragmentManager fragmentManager = NavigationActivity.fragmentManager;
-                       AddCoctel newFragment = new AddCoctel();
-                       newFragment.show(NavigationActivity.fragmentManager,"Cocteles");
-                    /*    AddCoctel dialog = new AddCoctel();
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        dialog.show(ft, AddCoctel.TAG);*/
-                      //  new ModificarBotella().show(NavigationActivity.fragmentManager, "SimpleDialog");
-                      //  BotellaId=botella.getId();
+                        if(!showDialog)showFullDialog();
 
                     }
                 });
@@ -152,6 +144,15 @@ public class CoctelesFragment extends Fragment {
 
         //  scroll.addView(contenedorBotellas);
         return view;//inflater.inflate(R.scroll.fragment_ventas, container, false);
+    }
+    public void  showFullDialog(){
+        FragmentManager fragmentManager = getFragmentManager();
+        AddCoctel newFragment = new AddCoctel();
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit();
+        showDialog=true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

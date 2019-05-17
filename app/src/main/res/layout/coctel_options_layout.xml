@@ -3,17 +3,24 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <android.support.v7.widget.SearchView
+
+    <Spinner
+        android:id="@+id/option_mercancia"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="8"/>
+        android:layout_height="match_parent"
+        android:layout_weight="6"/>
+
     <EditText
+        android:id="@+id/smedida"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textColor="#000"
         />
     <Spinner
+        android:id="@+id/umedida"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:textColor="#000"/>
 </LinearLayout>

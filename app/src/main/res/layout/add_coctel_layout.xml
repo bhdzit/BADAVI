@@ -2,38 +2,83 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBlanco"
+
   >
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
+    <ScrollView
         android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+    <LinearLayout
+        android:id="@+id/add_coctel_prcess_layout"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+
         >
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbarcoctrel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.Toolbar>
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/button_close"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_close"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Agregar Cocotel"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/button_action"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="Guardar"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+
 
     </android.support.design.widget.AppBarLayout>
         <EditText
+            android:id="@+id/nombreCoctel"
+            android:layout_marginTop="25dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="nombre"
             />
-        <include layout="@layout/coctel_options_layout"/>
+
 
 </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    </ScrollView>
+   <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_options_ccotel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+       android:backgroundTint="@color/colorPrimary"
         app:srcCompat="@android:drawable/ic_input_add" />
 </android.support.design.widget.CoordinatorLayout>
